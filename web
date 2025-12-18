@@ -1,1 +1,75 @@
-首先你需要注册一个GitHub 账号，并在个人主界面里选择创建一个新的Repository 。 进入页面后，在Repository name 的位置填写域名，格式是 username.GitHub.io 。
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>实时时钟</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Arial', sans-serif;
+        }
+
+        .clock-container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 60px 80px;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .time {
+            font-size: 72px;
+            font-weight: bold;
+            color: #ffffff;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            letter-spacing: 4px;
+        }
+
+        .date {
+            font-size: 24px;
+            color: #f0f0f0;
+            margin-top: 20px;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+    <div class="clock-container">
+        <div class="time" id="time"></div>
+        <div class="date" id="date"></div>
+    </div>
+
+    <script>
+        function updateClock() {
+            const now = new Date();
+
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+
+            const timeString = `${hours}:${minutes}:${seconds}`;
+            document.getElementById('time').textContent = timeString;
+
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const weekday = weekdays[now.getDay()];
+
+            const dateString = `${year}年${month}月${day}日 ${weekday}`;
+            document.getElementById('date').textContent = dateString;
+        }
+
+        updateClock();
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+</html>
