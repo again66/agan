@@ -3,51 +3,274 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>实时时钟</title>
+    <title>翻页时钟</title>
     <style>
-        body {
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            font-family: 'Arial', sans-serif;
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #0f0f1e 100%);
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            perspective: 1000px;
         }
 
         .clock-container {
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            padding: 60px 80px;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
             text-align: center;
         }
 
-        .time {
+        .flip-clock {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 50px;
+        }
+
+        .time-section {
+            display: flex;
+            gap: 10px;
+            position: relative;
+        }
+
+        .time-section::after {
+            content: ':';
+            position: absolute;
+            right: -20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 70px;
+            color: #fff;
+            font-weight: bold;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .time-section:last-child::after {
+            content: '';
+        }
+
+        .flip-card {
+            position: relative;
+            width: 100px;
+            height: 140px;
+            perspective: 500px;
+            filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.6));
+        }
+
+        .time-section:last-child .flip-card {
+            width: 70px;
+            height: 100px;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+        }
+
+        .flip-card-inner.flip {
+            animation: flipAnimation 0.6s ease-in-out;
+        }
+
+        @keyframes flipAnimation {
+            0% {
+                transform: rotateX(0deg);
+            }
+            50% {
+                transform: rotateX(-90deg);
+            }
+            100% {
+                transform: rotateX(0deg);
+            }
+        }
+
+        .flip-card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #2d2d44 0%, #1a1a2e 50%, #0f0f1e 100%);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 72px;
             font-weight: bold;
-            color: #ffffff;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-            letter-spacing: 4px;
+            color: #fff;
+            box-shadow:
+                0 2px 10px rgba(0, 0, 0, 0.8),
+                inset 0 2px 5px rgba(255, 255, 255, 0.1),
+                inset 0 -2px 5px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .time-section:last-child .flip-card-face {
+            font-size: 52px;
+            border-radius: 8px;
+        }
+
+        .flip-card-face::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+            border-radius: 10px 10px 0 0;
+            pointer-events: none;
+        }
+
+        .time-section:last-child .flip-card-face::before {
+            border-radius: 8px 8px 0 0;
+        }
+
+        .flip-card-face::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(0, 0, 0, 0.5);
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.8);
         }
 
         .date {
-            font-size: 24px;
-            color: #f0f0f0;
+            font-size: 22px;
+            color: rgba(255, 255, 255, 0.8);
+            letter-spacing: 3px;
             margin-top: 20px;
-            opacity: 0.9;
+            text-shadow: 0 2px 15px rgba(0, 0, 0, 0.5);
+            font-weight: 300;
+        }
+
+        .label {
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 300;
+        }
+
+        @media (max-width: 768px) {
+            .flip-clock {
+                gap: 10px;
+            }
+
+            .time-section {
+                gap: 4px;
+            }
+
+            .flip-card {
+                width: 60px;
+                height: 85px;
+            }
+
+            .time-section:last-child .flip-card {
+                width: 45px;
+                height: 65px;
+            }
+
+            .flip-card-face {
+                font-size: 48px;
+            }
+
+            .time-section:last-child .flip-card-face {
+                font-size: 36px;
+            }
+
+            .time-section::after {
+                font-size: 40px;
+                right: -8px;
+            }
+
+            .date {
+                font-size: 14px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="clock-container">
-        <div class="time" id="time"></div>
+        <div class="flip-clock">
+            <div class="time-section" id="hours-section">
+                <div class="flip-card">
+                    <div class="flip-card-inner" id="hour-tens">
+                        <div class="flip-card-face">0</div>
+                    </div>
+                </div>
+                <div class="flip-card">
+                    <div class="flip-card-inner" id="hour-ones">
+                        <div class="flip-card-face">0</div>
+                    </div>
+                </div>
+                <div class="label">小时</div>
+            </div>
+
+            <div class="time-section" id="minutes-section">
+                <div class="flip-card">
+                    <div class="flip-card-inner" id="minute-tens">
+                        <div class="flip-card-face">0</div>
+                    </div>
+                </div>
+                <div class="flip-card">
+                    <div class="flip-card-inner" id="minute-ones">
+                        <div class="flip-card-face">0</div>
+                    </div>
+                </div>
+                <div class="label">分钟</div>
+            </div>
+
+            <div class="time-section" id="seconds-section">
+                <div class="flip-card">
+                    <div class="flip-card-inner" id="second-tens">
+                        <div class="flip-card-face">0</div>
+                    </div>
+                </div>
+                <div class="flip-card">
+                    <div class="flip-card-inner" id="second-ones">
+                        <div class="flip-card-face">0</div>
+                    </div>
+                </div>
+                <div class="label">秒</div>
+            </div>
+        </div>
+
         <div class="date" id="date"></div>
     </div>
 
     <script>
+        let previousTime = { hours: '', minutes: '', seconds: '' };
+
+        function updateFlipCard(elementId, newValue) {
+            const element = document.getElementById(elementId);
+            const face = element.querySelector('.flip-card-face');
+            const currentValue = face.textContent;
+
+            if (currentValue !== newValue) {
+                element.classList.add('flip');
+
+                setTimeout(() => {
+                    face.textContent = newValue;
+                }, 300);
+
+                setTimeout(() => {
+                    element.classList.remove('flip');
+                }, 600);
+            }
+        }
+
         function updateClock() {
             const now = new Date();
 
@@ -55,8 +278,23 @@
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
 
-            const timeString = `${hours}:${minutes}:${seconds}`;
-            document.getElementById('time').textContent = timeString;
+            if (hours !== previousTime.hours) {
+                updateFlipCard('hour-tens', hours[0]);
+                updateFlipCard('hour-ones', hours[1]);
+                previousTime.hours = hours;
+            }
+
+            if (minutes !== previousTime.minutes) {
+                updateFlipCard('minute-tens', minutes[0]);
+                updateFlipCard('minute-ones', minutes[1]);
+                previousTime.minutes = minutes;
+            }
+
+            if (seconds !== previousTime.seconds) {
+                updateFlipCard('second-tens', seconds[0]);
+                updateFlipCard('second-ones', seconds[1]);
+                previousTime.seconds = seconds;
+            }
 
             const year = now.getFullYear();
             const month = String(now.getMonth() + 1).padStart(2, '0');
@@ -64,7 +302,7 @@
             const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
             const weekday = weekdays[now.getDay()];
 
-            const dateString = `${year}年${month}月${day}日 ${weekday}`;
+            const dateString = `北京时间 ${year}年${month}月${day}日 ${weekday}`;
             document.getElementById('date').textContent = dateString;
         }
 
